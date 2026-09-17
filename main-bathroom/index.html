@@ -25,17 +25,11 @@ body {
   justify-content: center;
 }
 
-
-/* MAIN COMPARISON */
-
 .comparison {
   position: relative;
   width: 100%;
   max-width: 1200px;
-
-  /* PORTRAIT */
   aspect-ratio: 3 / 4;
-
   overflow: hidden;
 
   user-select: none;
@@ -65,13 +59,12 @@ body {
 
 
 /* BEFORE SIDE */
-/* Starts at 35% */
 
 .before-container {
   position: absolute;
   inset: 0;
 
-  width: 35%;
+  width: 50%;
   overflow: hidden;
 
   z-index: 2;
@@ -84,14 +77,13 @@ body {
 
 
 /* DIVIDER */
-/* Starts at 35% */
 
 .divider {
   position: absolute;
 
   top: 0;
   bottom: 0;
-  left: 35%;
+  left: 50%;
 
   width: 2px;
 
@@ -178,8 +170,6 @@ body {
 }
 
 
-/* MOBILE */
-
 @media (max-width: 600px) {
 
   .handle {
@@ -203,13 +193,12 @@ body {
 </style>
 </head>
 
-
 <body>
 
 <div class="comparison" id="comparison">
 
 
-  <!-- AFTER IMAGE -->
+  <!-- AFTER -->
 
   <img
     class="after-image"
@@ -218,7 +207,7 @@ body {
   >
 
 
-  <!-- BEFORE IMAGE -->
+  <!-- BEFORE -->
 
   <div
     class="before-container"
@@ -244,7 +233,7 @@ body {
   </div>
 
 
-  <!-- SLIDER DIVIDER -->
+  <!-- SLIDER -->
 
   <div
     class="divider"
@@ -276,10 +265,14 @@ const divider =
 const beforeLabel =
   document.getElementById("beforeLabel");
 
+
+/* CHANGE THIS NUMBER TO CONTROL STARTING POSITION */
+
+const START_POSITION = 35;
+
+
 let dragging = false;
 
-
-/* SHOW/HIDE BEFORE LABEL */
 
 function updateLabel(percentage) {
 
@@ -300,7 +293,22 @@ function updateLabel(percentage) {
 }
 
 
-/* MOVE SLIDER */
+/* SET SLIDER TO A PERCENTAGE */
+
+function setPercentage(percentage) {
+
+  beforeContainer.style.width =
+    percentage + "%";
+
+  divider.style.left =
+    percentage + "%";
+
+  updateLabel(percentage);
+
+}
+
+
+/* SET POSITION FROM MOUSE/TOUCH */
 
 function setPosition(clientX) {
 
@@ -322,18 +330,12 @@ function setPosition(clientX) {
   const percentage =
     (position / rect.width) * 100;
 
-  beforeContainer.style.width =
-    percentage + "%";
-
-  divider.style.left =
-    percentage + "%";
-
-  updateLabel(percentage);
+  setPercentage(percentage);
 
 }
 
 
-/* START DRAGGING */
+/* POINTER DOWN */
 
 comparison.addEventListener(
   "pointerdown",
@@ -351,7 +353,7 @@ comparison.addEventListener(
 );
 
 
-/* DRAG */
+/* POINTER MOVE */
 
 comparison.addEventListener(
   "pointermove",
@@ -365,7 +367,7 @@ comparison.addEventListener(
 );
 
 
-/* STOP DRAGGING */
+/* POINTER UP */
 
 comparison.addEventListener(
   "pointerup",
@@ -387,9 +389,9 @@ comparison.addEventListener(
 );
 
 
-/* INITIAL POSITION = 35% */
+/* SET INITIAL SLIDER POSITION */
 
-updateLabel(35);
+setPercentage(START_POSITION);
 
 </script>
 
