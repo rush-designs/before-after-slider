@@ -25,6 +25,9 @@ body {
   justify-content: center;
 }
 
+
+/* MAIN COMPARISON */
+
 .comparison {
   position: relative;
   width: 100%;
@@ -62,12 +65,13 @@ body {
 
 
 /* BEFORE SIDE */
+/* Starts at 35% */
 
 .before-container {
   position: absolute;
   inset: 0;
 
-  width: 50%;
+  width: 35%;
   overflow: hidden;
 
   z-index: 2;
@@ -80,13 +84,14 @@ body {
 
 
 /* DIVIDER */
+/* Starts at 35% */
 
 .divider {
   position: absolute;
 
   top: 0;
   bottom: 0;
-  left: 50%;
+  left: 35%;
 
   width: 2px;
 
@@ -173,6 +178,8 @@ body {
 }
 
 
+/* MOBILE */
+
 @media (max-width: 600px) {
 
   .handle {
@@ -202,7 +209,7 @@ body {
 <div class="comparison" id="comparison">
 
 
-  <!-- AFTER -->
+  <!-- AFTER IMAGE -->
 
   <img
     class="after-image"
@@ -211,7 +218,7 @@ body {
   >
 
 
-  <!-- BEFORE -->
+  <!-- BEFORE IMAGE -->
 
   <div
     class="before-container"
@@ -237,7 +244,7 @@ body {
   </div>
 
 
-  <!-- SLIDER -->
+  <!-- SLIDER DIVIDER -->
 
   <div
     class="divider"
@@ -272,16 +279,28 @@ const beforeLabel =
 let dragging = false;
 
 
+/* SHOW/HIDE BEFORE LABEL */
+
 function updateLabel(percentage) {
 
   if (percentage < 22) {
-    beforeLabel.classList.add("label-hidden");
+
+    beforeLabel.classList.add(
+      "label-hidden"
+    );
+
   } else {
-    beforeLabel.classList.remove("label-hidden");
+
+    beforeLabel.classList.remove(
+      "label-hidden"
+    );
+
   }
 
 }
 
+
+/* MOVE SLIDER */
 
 function setPosition(clientX) {
 
@@ -294,7 +313,10 @@ function setPosition(clientX) {
   position =
     Math.max(
       0,
-      Math.min(position, rect.width)
+      Math.min(
+        position,
+        rect.width
+      )
     );
 
   const percentage =
@@ -310,6 +332,8 @@ function setPosition(clientX) {
 
 }
 
+
+/* START DRAGGING */
 
 comparison.addEventListener(
   "pointerdown",
@@ -327,6 +351,8 @@ comparison.addEventListener(
 );
 
 
+/* DRAG */
+
 comparison.addEventListener(
   "pointermove",
   function(event) {
@@ -339,10 +365,14 @@ comparison.addEventListener(
 );
 
 
+/* STOP DRAGGING */
+
 comparison.addEventListener(
   "pointerup",
   function() {
+
     dragging = false;
+
   }
 );
 
@@ -350,12 +380,16 @@ comparison.addEventListener(
 comparison.addEventListener(
   "pointercancel",
   function() {
+
     dragging = false;
+
   }
 );
 
 
-updateLabel(50);
+/* INITIAL POSITION = 35% */
+
+updateLabel(35);
 
 </script>
 
