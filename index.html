@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Before & After</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: transparent;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.comparison {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  cursor: ew-resize;
+}
+
+.after-image,
+.before-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.before-container {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.before-image {
+  width: 100vw;
+  max-width: 1200px;
+}
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: white;
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: 0 0 4px rgba(0,0,0,.25);
+}
+
+.handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translate(-50%, -50%);
+  border: 2px solid white;
+  border-radius: 50%;
+  background: rgba(25,25,25,.55);
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  font-family: Arial, sans-serif;
+  font-size: 25px;
+
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.label {
+  position: absolute;
+  top: 22px;
+  z-index: 5;
+
+  padding: 8px 12px;
+
+  background: rgba(20,20,20,.55);
+  color: white;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: .14em;
+
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.before-label {
+  left: 22px;
+}
+
+@media (max-width: 600px) {
+
+  .handle {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .label {
+    top: 14px;
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+
+  .before-label {
+    left: 14px;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="comparison" id="comparison">
+
+  <!-- AFTER -->
+  <img
+    class="after-image"
+    src="https://images.squarespace-cdn.com/content/v1/69d6b04da92f0f032bfc10cf/1ed0bb99-4c3f-4d73-b525-21c6a62fd29e/Foyer.png?format=1500w"
+    alt="Conceptual rendering of remodeled foyer"
+  >
+
+  <!-- BEFORE -->
+  <div class="before-container" id="beforeContainer">
+
+    <img
+      class="before-image"
+      src="https://images.squarespace-cdn.com/content/v1/69d6b04da92f0f032bfc10cf/392fcd4f-91f6-4305-b76d-0a359081a4e7/BAAFoyer.png?format=1500w"
+      alt="Original foyer"
+    >
+
+  </div>
+
+
+  <!-- SLIDER -->
+  <div class="divider" id="divider">
+
+    <div class="handle">
+      <span>‹</span>
+      <span>›</span>
+    </div>
+
+  </div>
+
+
+  <span class="label before-label">
+    BEFORE
+  </span>
+
+</div>
+
+
+<script>
+
+const comparison =
+  document.getElementById("comparison");
+
+const beforeContainer =
+  document.getElementById("beforeContainer");
+
+const divider =
+  document.getElementById("divider");
+
+let dragging = false;
+
+
+function setPosition(clientX) {
+
+  const rect =
+    comparison.getBoundingClientRect();
+
+  let position =
+    clientX - rect.left;
+
+  position =
+    Math.max(0, Math.min(position, rect.width));
+
+  const percentage =
+    (position / rect.width) * 100;
+
+  beforeContainer.style.width =
+    percentage + "%";
+
+  divider.style.left =
+    percentage + "%";
+}
+
+
+comparison.addEventListener(
+  "pointerdown",
+  function(event) {
+
+    dragging = true;
+
+    comparison.setPointerCapture(
+      event.pointerId
+    );
+
+    setPosition(event.clientX);
+  }
+);
+
+
+comparison.addEventListener(
+  "pointermove",
+  function(event) {
+
+    if (!dragging) return;
+
+    setPosition(event.clientX);
+  }
+);
+
+
+comparison.addEventListener(
+  "pointerup",
+  function() {
+    dragging = false;
+  }
+);
+
+
+comparison.addEventListener(
+  "pointercancel",
+  function() {
+    dragging = false;
+  }
+);
+
+</script>
+
+</body>
+</html>
