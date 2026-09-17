@@ -29,7 +29,10 @@ body {
   position: relative;
   width: 100%;
   max-width: 1200px;
-  aspect-ratio: 3 / 4;
+
+  /* LANDSCAPE */
+  aspect-ratio: 4 / 3;
+
   overflow: hidden;
 
   user-select: none;
@@ -38,6 +41,9 @@ body {
   touch-action: pan-y;
   cursor: ew-resize;
 }
+
+
+/* IMAGES */
 
 .after-image,
 .before-image {
@@ -54,6 +60,9 @@ body {
   pointer-events: none;
 }
 
+
+/* BEFORE SIDE */
+
 .before-container {
   position: absolute;
   inset: 0;
@@ -68,6 +77,9 @@ body {
   width: 100vw;
   max-width: 1200px;
 }
+
+
+/* DIVIDER */
 
 .divider {
   position: absolute;
@@ -88,6 +100,9 @@ body {
 
   box-shadow: 0 0 4px rgba(0,0,0,.25);
 }
+
+
+/* HANDLE */
 
 .handle {
   position: absolute;
@@ -120,6 +135,9 @@ body {
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }
+
+
+/* BEFORE LABEL */
 
 .before-label {
   position: absolute;
@@ -154,6 +172,7 @@ body {
   opacity: 0;
 }
 
+
 @media (max-width: 600px) {
 
   .handle {
@@ -177,9 +196,11 @@ body {
 </style>
 </head>
 
+
 <body>
 
 <div class="comparison" id="comparison">
+
 
   <!-- AFTER -->
 
@@ -229,6 +250,7 @@ body {
     </div>
 
   </div>
+
 
 </div>
 
