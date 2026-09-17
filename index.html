@@ -25,9 +25,6 @@ body {
   justify-content: center;
 }
 
-
-/* MAIN COMPARISON */
-
 .comparison {
   position: relative;
   width: 100%;
@@ -61,7 +58,7 @@ body {
 }
 
 
-/* BEFORE CLIPPING AREA */
+/* BEFORE IMAGE */
 
 .before-container {
   position: absolute;
@@ -72,12 +69,6 @@ body {
 
   z-index: 2;
 }
-
-
-/*
-Keeps the before image full-size while
-the container reveals/hides it.
-*/
 
 .before-image {
   width: 100vw;
@@ -104,8 +95,7 @@ the container reveals/hides it.
 
   pointer-events: none;
 
-  box-shadow:
-    0 0 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 4px rgba(0,0,0,.25);
 }
 
 
@@ -125,8 +115,7 @@ the container reveals/hides it.
   border: 2px solid white;
   border-radius: 50%;
 
-  background:
-    rgba(25, 25, 25, 0.55);
+  background: rgba(25,25,25,.55);
 
   color: white;
 
@@ -136,9 +125,7 @@ the container reveals/hides it.
 
   gap: 7px;
 
-  font-family:
-    Arial, sans-serif;
-
+  font-family: Arial, sans-serif;
   font-size: 25px;
   line-height: 1;
 
@@ -147,56 +134,36 @@ the container reveals/hides it.
 }
 
 
-/* LABELS */
+/* BEFORE LABEL */
 
-.label {
+.before-label {
   position: absolute;
+
+  top: 20px;
+  left: 20px;
 
   z-index: 4;
 
   padding: 8px 12px;
 
-  background:
-    rgba(20, 20, 20, 0.58);
+  background: rgba(20,20,20,.58);
 
   color: white;
 
-  font-family:
-    Arial, sans-serif;
-
+  font-family: Arial, sans-serif;
   font-size: 11px;
   font-weight: 500;
 
-  letter-spacing: 0.13em;
+  letter-spacing: .13em;
 
   border-radius: 2px;
 
   pointer-events: none;
 
-  transition:
-    opacity 0.15s ease;
+  transition: opacity .15s ease;
 
   white-space: nowrap;
 }
-
-
-/* BEFORE LABEL */
-
-.before-label {
-  top: 20px;
-  left: 20px;
-}
-
-
-/* CONCEPTUAL LABEL */
-
-.after-label {
-  right: 20px;
-  bottom: 20px;
-}
-
-
-/* HIDDEN LABEL STATE */
 
 .label-hidden {
   opacity: 0;
@@ -214,22 +181,14 @@ the container reveals/hides it.
     font-size: 22px;
   }
 
-  .label {
-    padding: 7px 9px;
-
-    font-size: 9px;
-
-    letter-spacing: 0.1em;
-  }
-
   .before-label {
     top: 14px;
     left: 14px;
-  }
 
-  .after-label {
-    right: 14px;
-    bottom: 14px;
+    padding: 7px 9px;
+
+    font-size: 9px;
+    letter-spacing: .1em;
   }
 
 }
@@ -240,14 +199,10 @@ the container reveals/hides it.
 
 <body>
 
-
-<div
-  class="comparison"
-  id="comparison"
->
+<div class="comparison" id="comparison">
 
 
-  <!-- AFTER IMAGE -->
+  <!-- AFTER -->
 
   <img
     class="after-image"
@@ -256,7 +211,7 @@ the container reveals/hides it.
   >
 
 
-  <!-- BEFORE IMAGE -->
+  <!-- BEFORE -->
 
   <div
     class="before-container"
@@ -275,20 +230,10 @@ the container reveals/hides it.
   <!-- BEFORE LABEL -->
 
   <div
-    class="label before-label"
+    class="before-label"
     id="beforeLabel"
   >
     BEFORE
-  </div>
-
-
-  <!-- AFTER LABEL -->
-
-  <div
-    class="label after-label"
-    id="afterLabel"
-  >
-    CONCEPTUAL RENDERING
   </div>
 
 
@@ -300,11 +245,8 @@ the container reveals/hides it.
   >
 
     <div class="handle">
-
       <span>‹</span>
-
       <span>›</span>
-
     </div>
 
   </div>
@@ -327,20 +269,15 @@ const divider =
 const beforeLabel =
   document.getElementById("beforeLabel");
 
-const afterLabel =
-  document.getElementById("afterLabel");
-
-
 let dragging = false;
 
 
-/* UPDATE LABEL VISIBILITY */
-
-function updateLabels(percentage) {
+function updateLabel(percentage) {
 
   /*
-  Hide BEFORE once the slider gets
-  close to the left-side label.
+  BEFORE disappears when there is
+  no longer enough before image
+  underneath the label.
   */
 
   if (percentage < 22) {
@@ -357,41 +294,16 @@ function updateLabels(percentage) {
 
   }
 
-
-  /*
-  Hide CONCEPTUAL RENDERING once
-  there isn't enough after-image
-  remaining on the right.
-  */
-
-  if (percentage > 72) {
-
-    afterLabel.classList.add(
-      "label-hidden"
-    );
-
-  } else {
-
-    afterLabel.classList.remove(
-      "label-hidden"
-    );
-
-  }
-
 }
 
-
-/* MOVE SLIDER */
 
 function setPosition(clientX) {
 
   const rect =
     comparison.getBoundingClientRect();
 
-
   let position =
     clientX - rect.left;
-
 
   position =
     Math.max(
@@ -402,27 +314,19 @@ function setPosition(clientX) {
       )
     );
 
-
   const percentage =
     (position / rect.width) * 100;
-
 
   beforeContainer.style.width =
     percentage + "%";
 
-
   divider.style.left =
     percentage + "%";
 
-
-  updateLabels(
-    percentage
-  );
+  updateLabel(percentage);
 
 }
 
-
-/* POINTER / TOUCH EVENTS */
 
 comparison.addEventListener(
   "pointerdown",
@@ -430,15 +334,11 @@ comparison.addEventListener(
 
     dragging = true;
 
-
     comparison.setPointerCapture(
       event.pointerId
     );
 
-
-    setPosition(
-      event.clientX
-    );
+    setPosition(event.clientX);
 
   }
 );
@@ -450,10 +350,7 @@ comparison.addEventListener(
 
     if (!dragging) return;
 
-
-    setPosition(
-      event.clientX
-    );
+    setPosition(event.clientX);
 
   }
 );
@@ -479,12 +376,9 @@ comparison.addEventListener(
 );
 
 
-/* INITIAL STATE */
-
-updateLabels(50);
+updateLabel(50);
 
 </script>
-
 
 </body>
 </html>
