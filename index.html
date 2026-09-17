@@ -61,7 +61,7 @@ body {
 }
 
 
-/* BEFORE IMAGE CLIPPING AREA */
+/* BEFORE CLIPPING AREA */
 
 .before-container {
   position: absolute;
@@ -75,8 +75,8 @@ body {
 
 
 /*
-Keeps the BEFORE image at the full comparison width
-while its container is being clipped.
+Keeps the before image full-size while
+the container reveals/hides it.
 */
 
 .before-image {
@@ -85,7 +85,7 @@ while its container is being clipped.
 }
 
 
-/* DIVIDER LINE */
+/* DIVIDER */
 
 .divider {
   position: absolute;
@@ -100,7 +100,7 @@ while its container is being clipped.
 
   transform: translateX(-50%);
 
-  z-index: 4;
+  z-index: 5;
 
   pointer-events: none;
 
@@ -109,7 +109,7 @@ while its container is being clipped.
 }
 
 
-/* DRAG HANDLE */
+/* HANDLE */
 
 .handle {
   position: absolute;
@@ -120,8 +120,7 @@ while its container is being clipped.
   width: 48px;
   height: 48px;
 
-  transform:
-    translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 
   border: 2px solid white;
   border-radius: 50%;
@@ -148,43 +147,59 @@ while its container is being clipped.
 }
 
 
-/* BEFORE LABEL */
+/* LABELS */
 
 .label {
   position: absolute;
 
-  top: 22px;
+  z-index: 4;
 
   padding: 8px 12px;
 
   background:
-    rgba(20, 20, 20, 0.55);
+    rgba(20, 20, 20, 0.58);
 
   color: white;
 
   font-family:
     Arial, sans-serif;
 
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
 
-  letter-spacing: 0.14em;
+  letter-spacing: 0.13em;
 
   border-radius: 2px;
 
   pointer-events: none;
+
+  transition:
+    opacity 0.15s ease;
+
+  white-space: nowrap;
 }
 
 
-/*
-IMPORTANT:
-This label is INSIDE the before-container.
-
-That means it disappears along with the
-BEFORE image as the slider moves left.
-*/
+/* BEFORE LABEL */
 
 .before-label {
-  left: 22px;
+  top: 20px;
+  left: 20px;
+}
+
+
+/* CONCEPTUAL LABEL */
+
+.after-label {
+  right: 20px;
+  bottom: 20px;
+}
+
+
+/* HIDDEN LABEL STATE */
+
+.label-hidden {
+  opacity: 0;
 }
 
 
@@ -200,15 +215,21 @@ BEFORE image as the slider moves left.
   }
 
   .label {
-    top: 14px;
-
     padding: 7px 9px;
 
-    font-size: 10px;
+    font-size: 9px;
+
+    letter-spacing: 0.1em;
   }
 
   .before-label {
+    top: 14px;
     left: 14px;
+  }
+
+  .after-label {
+    right: 14px;
+    bottom: 14px;
   }
 
 }
@@ -226,7 +247,7 @@ BEFORE image as the slider moves left.
 >
 
 
-  <!-- AFTER / CONCEPTUAL RENDERING -->
+  <!-- AFTER IMAGE -->
 
   <img
     class="after-image"
@@ -235,7 +256,7 @@ BEFORE image as the slider moves left.
   >
 
 
-  <!-- BEFORE -->
+  <!-- BEFORE IMAGE -->
 
   <div
     class="before-container"
@@ -248,22 +269,30 @@ BEFORE image as the slider moves left.
       alt="Original foyer"
     >
 
-
-    <!--
-    BEFORE label is deliberately
-    inside this container.
-    -->
-
-    <span
-      class="label before-label"
-    >
-      BEFORE
-    </span>
-
   </div>
 
 
-  <!-- DIVIDER -->
+  <!-- BEFORE LABEL -->
+
+  <div
+    class="label before-label"
+    id="beforeLabel"
+  >
+    BEFORE
+  </div>
+
+
+  <!-- AFTER LABEL -->
+
+  <div
+    class="label after-label"
+    id="afterLabel"
+  >
+    CONCEPTUAL RENDERING
+  </div>
+
+
+  <!-- SLIDER -->
 
   <div
     class="divider"
@@ -284,27 +313,75 @@ BEFORE image as the slider moves left.
 </div>
 
 
-
 <script>
 
 const comparison =
-  document.getElementById(
-    "comparison"
-  );
+  document.getElementById("comparison");
 
 const beforeContainer =
-  document.getElementById(
-    "beforeContainer"
-  );
+  document.getElementById("beforeContainer");
 
 const divider =
-  document.getElementById(
-    "divider"
-  );
+  document.getElementById("divider");
+
+const beforeLabel =
+  document.getElementById("beforeLabel");
+
+const afterLabel =
+  document.getElementById("afterLabel");
+
 
 let dragging = false;
 
 
+/* UPDATE LABEL VISIBILITY */
+
+function updateLabels(percentage) {
+
+  /*
+  Hide BEFORE once the slider gets
+  close to the left-side label.
+  */
+
+  if (percentage < 22) {
+
+    beforeLabel.classList.add(
+      "label-hidden"
+    );
+
+  } else {
+
+    beforeLabel.classList.remove(
+      "label-hidden"
+    );
+
+  }
+
+
+  /*
+  Hide CONCEPTUAL RENDERING once
+  there isn't enough after-image
+  remaining on the right.
+  */
+
+  if (percentage > 72) {
+
+    afterLabel.classList.add(
+      "label-hidden"
+    );
+
+  } else {
+
+    afterLabel.classList.remove(
+      "label-hidden"
+    );
+
+  }
+
+}
+
+
+/* MOVE SLIDER */
 
 function setPosition(clientX) {
 
@@ -337,9 +414,15 @@ function setPosition(clientX) {
   divider.style.left =
     percentage + "%";
 
+
+  updateLabels(
+    percentage
+  );
+
 }
 
 
+/* POINTER / TOUCH EVENTS */
 
 comparison.addEventListener(
   "pointerdown",
@@ -361,7 +444,6 @@ comparison.addEventListener(
 );
 
 
-
 comparison.addEventListener(
   "pointermove",
   function(event) {
@@ -377,7 +459,6 @@ comparison.addEventListener(
 );
 
 
-
 comparison.addEventListener(
   "pointerup",
   function() {
@@ -386,7 +467,6 @@ comparison.addEventListener(
 
   }
 );
-
 
 
 comparison.addEventListener(
@@ -398,6 +478,10 @@ comparison.addEventListener(
   }
 );
 
+
+/* INITIAL STATE */
+
+updateLabels(50);
 
 </script>
 
